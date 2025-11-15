@@ -1,5 +1,3 @@
-from calendar import month
-
 from src.masks import get_mask_account, get_mask_card_number
 
 
@@ -33,6 +31,6 @@ def get_date(date: str) -> str:
         if day.isdigit() and month.isdigit() and year.isdigit():
             return f"{date[8:10]}.{date[5:7]}.{date[0:4]}"
         else:
-            raise ValueError('Некорректная дата')
+            raise ValueError("Некорректная дата")
     else:
-        raise ValueError('Отсутствует дата')
+        raise ValueError("Отсутствует дата")
