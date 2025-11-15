@@ -1,25 +1,38 @@
-from masks import get_mask_account, get_mask_card_number
+from calendar import month
+
+from src.masks import get_mask_account, get_mask_card_number
 
 
 def mask_account_card(card_number: str) -> str:
     """Маскирует номер счета или карты"""
-    if card_number[0:4] == "Счет":
-        mask = get_mask_account(card_number[5:])
-        return f"{card_number[0:5]} {mask}"
+    if card_number and len(card_number) > 20:
+        if card_number[0:4] == "Счет":
+            account_namber = card_number[5:]
+            if account_namber.isdigit() and len(account_namber) == 20:
+                mask = get_mask_account(card_number[5:])
+                return f"{card_number[0:4]} {mask}"
+            else:
+                raise ValueError("Неверный номер счета")
+        else:
+            card_number_mask = card_number[-16:]
+            if card_number_mask.isdigit() and len(card_number_mask) == 16:
+                mask = get_mask_card_number(card_number_mask)
+                return f"{card_number[:-16]}{mask}"
+            else:
+                raise ValueError("Неверный номер карты")
     else:
-        mask = get_mask_card_number(card_number[-16:])
-        return f"{card_number[:-16]} {mask}"
+        raise ValueError("Отсутствует номер счета или карты")
 
 
 def get_date(date: str) -> str:
     """Преобразует дату в формат dd.mm.yyyy"""
-    return f"{date[8:10]}.{date[5:7]}.{date[0:4]}"
-
-
-if __name__ == "__main__":
-    card_number = "Счет 73654108430135874305"
-    print(mask_account_card(card_number))
-    card_number = "MasterCard 7158300734726758"
-    print(mask_account_card(card_number))
-    date = "2024-03-11T02:26:18.671407"
-    print(get_date(date))
+    if date:
+        day = date[8:10]
+        month = date[5:7]
+        year = date[0:4]
+        if day.isdigit() and month.isdigit() and year.isdigit():
+            return f"{date[8:10]}.{date[5:7]}.{date[0:4]}"
+        else:
+            raise ValueError('Некорректная дата')
+    else:
+        raise ValueError('Отсутствует дата')
